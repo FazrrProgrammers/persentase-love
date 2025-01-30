@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Persentase Cinta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: url('https://files.catbox.moe/rpvfdp.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #444;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 3px solid #fff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 12px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #f7f7f7;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #fff;
+            background-color: #fff;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #6a4cff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        button:hover {
+            background-color: #5942e4;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.7);
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #28a745;
+            transition: all 0.3s ease;
+        }
+
+        .result.error {
+            color: #dc3545;
+        }
+
+        .warning {
+            margin-top: 15px;
+            color: #dc3545;
+            font-size: 1rem;
+            font-weight: 600;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .loading {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #f0ad4e;
+            display: none;
+            text-align: center;
+        }
+
+        .loading span {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin: 0 6px;
+            background-color: #6a4cff;
+            border-radius: 50%;
+            animation: loadingPulse 1.5s infinite ease-in-out;
+        }
+
+        .loading span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .loading span:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .loading span:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% {
+                transform: scale(0.6);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Media Queries for responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            input, button {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Cek Persentase Cinta</h2>
+        <input type="text" id="namaAnda" placeholder="Masukkan nama Anda" autofocus>
+        <input type="text" id="namaPasangan" placeholder="Masukkan nama pasangan">
+        <button onclick="cekCinta()">Cek Sekarang</button>
+        <div class="warning" id="warning"></div>
+        <div class="loading" id="loading">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="result" id="hasil"></div>
+    </div>
+
+    <script>
+        const blacklist = ['joko', 'andi', 'siti'];
+
+        function cekCinta() {
+            let namaAnda = document.getElementById("namaAnda").value;
+            let namaPasangan = document.getElementById("namaPasangan").value;
+            let hasilElement = document.getElementById("hasil");
+            let warningElement = document.getElementById("warning");
+            let loadingElement = document.getElementById("loading");
+
+            warningElement.innerText = "";
+            hasilElement.innerText = "";
+
+            if (namaAnda === "" || namaPasangan === "") {
+                warningElement.innerText = "Mohon isi kedua nama terlebih dahulu!";
+                warningElement.classList.add('error');
+                return;
+            }
+
+            if (blacklist.includes(namaAnda.toLowerCase()) || blacklist.includes(namaPasangan.toLowerCase())) {
+                warningElement.innerText = "Nama Anda atau pasangan ada dalam daftar blacklist. Coba nama lain!";
+                warningElement.classList.add('error');
+                return;
+            }
+
+            loadingElement.style.display = 'block';
+
+            setTimeout(function() {
+                let persenCinta = Math.floor(Math.random() * 101);
+                let pesan = '';
+
+                if (persenCinta === 100) {
+                    pesan = "🔥 Sejatinya kalian adalah match made in heaven!";
+                } else if (persenCinta >= 90) {
+                    pesan = "💖 Tingkat cinta kalian hampir sempurna!";
+                } else if (persenCinta >= 80) {
+                    pesan = "🌟 Cinta yang keren!";
+                } else if (persenCinta >= 70) {
+                    pesan = "💙 Cinta yang tumbuh kuat!";
+                } else if (persenCinta >= 60) {
+                    pesan = "💌 Cinta yang sweet!";
+                } else if (persenCinta >= 50) {
+                    pesan = "💛 Cinta yang stabil!";
+                } else if (persenCinta >= 40) {
+                    pesan = "💔 Cinta yang sedang diuji!";
+                } else if (persenCinta >= 30) {
+                    pesan = "🤔 Cinta yang penuh keraguan!";
+                } else if (persenCinta >= 20) {
+                    pesan = "😞 Cinta yang goyah!";
+                } else if (persenCinta >= 10) {
+                    pesan = "💔 Cinta yang mulai pudar!";
+                } else {
+                    pesan = "💔 Cinta yang hampir habis!";
+                }
+
+                hasilElement.innerText = `Hasil: ${persenCinta}% ${pesan}`;
+                loadingElement.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
